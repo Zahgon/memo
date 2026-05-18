@@ -54,18 +54,6 @@ def memlist(data: List, skip: bool = False):
     ```
     """
 
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            result = func(*args, **kwargs)
-            # We might be able to skip if the parameters
-            # already appear in the dataset.
-            if skip and _contains(kwargs, data):
-                return None
-            data.append({**kwargs, **result})
-            return result
-
-        return wrapper
 
     return decorator
 
@@ -91,27 +79,6 @@ def memfile(filepath: str, skip: bool = False):
     ```
     """
 
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            result = func(*args, **kwargs)
-            if skip:
-                if pathlib.Path(filepath).exists():
-                    with open(filepath, "r") as f:
-                        datalist = [orjson.loads(line) for line in list(f)]
-                else:
-                    datalist = []
-            with open(filepath, "a") as f:
-                if skip and _contains(kwargs, datalist):
-                    return None
-                ser = orjson.dumps(
-                    {**kwargs, **result},
-                    option=orjson.OPT_NAIVE_UTC | orjson.OPT_SERIALIZE_NUMPY,
-                )
-                f.write(ser.decode("utf-8") + "\n")
-            return result
-
-        return wrapper
 
     return decorator
 
@@ -142,13 +109,5 @@ def memfunc(callback: Callable):
     ```
     """
 
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            result = func(*args, **kwargs)
-            callback({**kwargs, **result})
-            return result
-
-        return wrapper
 
     return decorator

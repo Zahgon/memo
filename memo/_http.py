@@ -24,15 +24,4 @@ def memweb(url: str):
     Arguments:
         url: web url to post json to
     """
-
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            result = func(*args, **kwargs)
-            with httpx.Client() as client:
-                _ = client.post(url, data={**kwargs, **result})
-            return result
-
-        return wrapper
-
-    return decorator
+    pass

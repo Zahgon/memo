@@ -37,18 +37,5 @@ def time_taken(minutes: bool = False, rounding: int = 2):
     ```
     """
 
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            tic = time.perf_counter()
-            result = func(*args, **kwargs)
-            toc = time.perf_counter()
-            time_total = toc - tic
-            if minutes:
-                time_total = time_total / 60
-            result = {**result, "time_taken": round(time_total, rounding)}
-            return result
-
-        return wrapper
 
     return decorator
